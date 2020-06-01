@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+  - name: Install nodejs
+    apt:
+      name: nodejs
+      update_cache: yes
+      state: latest
+
+  - name: Install nginx
+    apt:
+      name: nginx
+      update_cache: yes
+      state: present
+
+  - name: emoving the default
+    file:
+      path: /etc/nginx/sites-available/default
+      state: absent
+  - name: adding proxy.conf into machine
+    copy:
+      src: proxy.conf
+      dest: /etc/nginx/sites-available/default
+  
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
